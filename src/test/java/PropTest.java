@@ -15,10 +15,5 @@ public class PropTest implements WithQuickTheories {
     }
 
 
-    @Test
-    public void testDate() {
-        qt().forAll(longs()).check();
-        Date date = new Date();
-    }
 
 }
