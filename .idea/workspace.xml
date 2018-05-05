@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bfe0d27c-fa73-471f-96f7-0d8f35e5a122" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/src/test/java/SeleniumI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/PropTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/PropTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/SeleniumI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/SeleniumI.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
@@ -32,7 +29,14 @@
       </file>
       <file leaf-file-name="SeleniumI.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/test/java/SeleniumI.java">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="278">
+              <caret line="23" column="1" lean-forward="true" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
       <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
@@ -209,7 +213,7 @@
       <option name="presentableId" value="Default" />
       <updated>1525421193890</updated>
       <workItem from="1525421200545" duration="1403000" />
-      <workItem from="1525525217719" duration="3156000" />
+      <workItem from="1525525217719" duration="3830000" />
     </task>
     <task id="LOCAL-00001" summary="1 st">
       <created>1525422011307</created>
@@ -222,7 +226,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="7416000" />
+    <option name="totallyTimeSpent" value="8090000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-1" y="0" width="1368" height="747" extended-state="6" />
@@ -313,7 +317,14 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/test/java/SeleniumI.java">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="278">
+          <caret line="23" column="1" lean-forward="true" selection-start-line="23" selection-start-column="1" selection-end-line="23" selection-end-column="1" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
     </entry>
   </component>
   <component name="masterDetails">
