@@ -15,6 +15,7 @@ public class PropTest implements WithQuickTheories {
     }
 
 
+<<<<<<< HEAD
     @Test
     public void testDate() {
         qt()
@@ -24,5 +25,7 @@ public class PropTest implements WithQuickTheories {
                     return  true;
                 }));
     }
+=======
+>>>>>>> f3552c4919ee61bd92f9e5144829554cc9e187ec
 
 }
