@@ -1,6 +1,8 @@
 import org.quicktheories.WithQuickTheories;
 import org.testng.annotations.Test;
 
+import java.util.Date;
+
 import static org.quicktheories.generators.Generate.*;
 
 public class PropTest implements WithQuickTheories {
@@ -12,5 +14,11 @@ public class PropTest implements WithQuickTheories {
                 .check((i, c) -> i + c >= 7);
     }
 
+
+    @Test
+    public void testDate() {
+        qt().forAll(longs()).check();
+        Date date = new Date();
+    }
 
 }
