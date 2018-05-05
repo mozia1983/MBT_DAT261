@@ -12,5 +12,5 @@ public class PropTest implements WithQuickTheories {
                 .check((i, c) -> i + c >= 7);
     }
 
-    
+
 }
