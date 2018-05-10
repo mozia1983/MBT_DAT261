@@ -205,7 +205,7 @@ public class SeleniumI {
      */
     public  void addOneSession(String sessionName,String date, WebDriver chromeDriver) {
         WebDriverWait wait = new WebDriverWait(chromeDriver,30);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fsname")));
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fsname")));
         chromeDriver.findElement(By.id("fsname")).sendKeys(sessionName);
         chromeDriver.findElement(By.id("enddate")).sendKeys(date);
         chromeDriver.findElement(By.id("fsname")).click();
@@ -264,4 +264,178 @@ public class SeleniumI {
         }
     }
 
+    /**
+     * Get the count of courses
+     * @param chromeDriver - The webPage controller
+     * @return int         - The number of courses in the "active courses" list
+     */
+    public int getCoursesCount(WebDriver chromeDriver){
+        WebDriverWait wait = new WebDriverWait(chromeDriver,30);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("th.align-center.no-print")));
+        ArrayList<String> data = new ArrayList<>();
+        List<WebElement> rows =  chromeDriver.findElements(By.xpath("//table[@id='tableActiveCourses']/tbody/tr"));
+        for (WebElement row : rows) {
+            WebElement dataElement = row.findElement(By.xpath("td[position()=2]"));  // The courses names are in the second element
+            data.add(dataElement.getText().toString());
+        }
+        if (data.get(0).isEmpty()){return 0;} // this test is mandatory because empty list does not mean empty html table
+        else return data.size();
+    }
+
+    /**
+     * check if the the number of courses still the same after surfing between tabs a random number of times
+     *
+     * @param i                 - The random number of surfing times
+     * @param initialNbCourse   - The number of added courses initially
+     * @param chromeDriver      - The webPage controller
+     * @return boolean          - True if the number of courses appearing in the active course list is the same, false in the other case.
+     */
+    public boolean checkForCourseAfterSurfing(int i,int initialNbCourse, WebDriver chromeDriver) {
+        int j = i % 5;
+        switch (j) {
+            case 0: goToTab("a.nav.home", chromeDriver);
+                return true;
+            case 1: goToTab("a.nav.courses", chromeDriver);
+                    int count = getCoursesCount(chromeDriver);
+                        if (count==initialNbCourse) return true;
+                        else return false;
+            case 2: goToTab("a.nav.evaluations", chromeDriver);
+                return true;
+            case 3: goToTab("a.nav.students", chromeDriver);
+                return true;
+            case 4: goToTab("a.nav.search", chromeDriver);
+                return true;
+        }
+        System.out.print("Why i am here ?");
+        return false;
+    }
+
+    /**
+     * Get the count of courses
+     * @param chromeDriver - The webPage controller
+     * @return int         - The number of sessions in the "Sessions" list
+     */
+    public int getSessionsCount(WebDriver chromeDriver){
+        WebDriverWait wait = new WebDriverWait(chromeDriver,30);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("table-sessions")));
+        ArrayList<String> data = new ArrayList<>();
+        // From the table rows you construct a list called rows where each element is a row.
+        List<WebElement> rows =  chromeDriver.findElements(By.xpath("//table[@id='table-sessions']/tbody/tr"));
+        for (WebElement row : rows) {
+            WebElement dataElement = row.findElement(By.xpath("td[position()=2]")); // The sessions names are in the second element
+            data.add(dataElement.getText().toString());
+        }
+        if (data.get(0).isEmpty()){return 0;} // this test is mandatory because empty list does not mean empty html table
+        else return data.size();
+    }
+
+    /**
+     * check if the the number of sessions still the same after surfing between tabs a random number of times
+     *
+     * @param i                 - The random number of surfing times
+     * @param initialNbSessions   - The number of added sessions initially
+     * @param chromeDriver      - The webPage controller
+     * @return boolean          - True if the number of sessions appearing in the active course list is the same, false in the other case.
+     */
+    public boolean checkForSessionsAfterSurfing(int i,int initialNbSessions, WebDriver chromeDriver) {
+        int j = i % 5;
+        switch (j) {
+            case 0: goToTab("a.nav.home", chromeDriver);
+                return true;
+            case 1: goToTab("a.nav.courses", chromeDriver);
+                return true;
+            case 2: goToTab("a.nav.evaluations", chromeDriver);
+                int count = getSessionsCount(chromeDriver);
+                    if (count==initialNbSessions) return true;
+                    else return false;
+            case 3: goToTab("a.nav.students", chromeDriver);
+                return true;
+            case 4: goToTab("a.nav.search", chromeDriver);
+                return true;
+        }
+        System.out.print("Why i am here ?");
+        return false;
+    }
+
+    /**
+     * check if the the number of sessions still the same after surfing between tabs a random number of times
+     *
+     * @param i                 - The random number of alternative sort clicks
+     * @param chromeDriver      - The webPage controller
+     * @return boolean          - True if the sort of courses list remain consistent however the number of clicks, false if not.
+     */
+    public boolean courseIDSort(int i, WebDriver chromeDriver) {
+
+        goToTab("a.nav.evaluations",chromeDriver);
+        goToTab("a.nav.courses",chromeDriver);
+        JavascriptExecutor jse = (JavascriptExecutor) chromeDriver;
+        jse.executeScript("scroll(0, 350)");
+
+        WebElement dataElement;
+        List<WebElement> rows;
+        List<String> idSortedAscending = new ArrayList<>();
+        List<String> idSortedDescending = new ArrayList<>();
+
+        // We get the list of courses sorted in ascending order ( by default)
+        rows = chromeDriver.findElements(By.xpath("//table[@id='tableActiveCourses']/tbody/tr"));
+        for ( int j = 0; j < rows.size(); j++) {
+            dataElement = rows.get(j).findElement(By.xpath("td[position()=1]"));
+            idSortedAscending.add(dataElement.getText());
+        }
+        System.out.print("Sorted Ascending : \n");
+        idSortedAscending.forEach(System.out::println);
+
+        // We get the list of courses sorted in descending order ( we click one time)
+        sortColumn("button_sortcourseid", chromeDriver);
+        rows = chromeDriver.findElements(By.xpath("//table[@id='tableActiveCourses']/tbody/tr"));
+        for ( int j = 0; j < rows.size(); j++) {
+            dataElement = rows.get(j).findElement(By.xpath("td[position()=1]"));
+            idSortedDescending.add(dataElement.getText());
+        }
+        System.out.print("Sorted Descending : \n");
+        idSortedDescending.forEach(System.out::println);
+
+        // To return to the initial state we go to another tab and then we return
+        goToTab("a.nav.evaluations",chromeDriver);
+        goToTab("a.nav.courses",chromeDriver);
+        jse.executeScript("scroll(0, 350)");
+
+        // We click 'i' times
+        for(int j = 0; j < i ; j++) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sortColumn("button_sortcourseid", chromeDriver);
+        }
+        // we extract the sorted list after i clicks
+        rows = chromeDriver.findElements(By.xpath("//table[@id='tableActiveCourses']/tbody/tr"));
+        List<String> sortedList = new ArrayList<>();
+            // We extract the ID first
+            for (int j = 0; j < rows.size(); j++) {
+                dataElement = rows.get(j).findElement(By.xpath("td[position()=1]"));
+                sortedList.add(dataElement.getText());
+            }
+
+        System.out.print("Number of clicks : "+i+"\n");
+
+        System.out.print("Sorted \n");
+        sortedList.forEach(System.out::println);
+
+        // if i is  even the list must return to the default case ( Ascending)
+        // if i is  odd the list must return to the opposite of default case ( Descending)
+        if(i%2==0)  return sortedList.equals(idSortedAscending);
+        else        return sortedList.equals(idSortedDescending);
+    }
 }

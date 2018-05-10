@@ -193,5 +193,67 @@ public class PropTest implements WithQuickTheories {
 
     }
 
+    // A test for surfing through tabs
+    @Test
+    public void surfingThroughTabsDoesNotChangeCoursesView() {
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
+        WebDriver driver = new ChromeDriver();
+        SeleniumI seleniumI = new SeleniumI();
+        seleniumI.login(driver);
+
+        // created just to be able to add three courses
+        seleniumI.goToTab("a.nav.courses", driver);
+        seleniumI.addCourse("MOMO", "ZIA", driver);
+        seleniumI.addCourse("KE", "JIA", driver);
+        seleniumI.addCourse("MOH", "HASS", driver);
+
+
+        qt()
+                .forAll(integers().between(0,300))
+                .check( i -> seleniumI.checkForCourseAfterSurfing(i, 3, driver));
+    }
+
+    // A test for surfing through sessions
+    @Test
+    public void surfingThroughTabsDoesNotChangeSessionsView() {
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
+        SeleniumI seleniumI = new SeleniumI();
+        WebDriver driver = new ChromeDriver();
+        seleniumI.login(driver);
+
+        // created just to be able to add three sessions
+        seleniumI.goToTab("a.nav.courses", driver);
+        seleniumI.addCourse("MOMO", "ZIA", driver);
+
+        seleniumI.goToTab("a.nav.evaluations", driver);
+        seleniumI.addOneSession("Hello","Wed, 18 Jul, 2018",driver);
+        seleniumI.addOneSession("Hi","Wed, 18 Jul, 2018",driver);
+        seleniumI.addOneSession("Hola","Wed, 18 Jul, 2018",driver);
+
+        qt()
+                .forAll(integers().between(0,50))
+                .check( i -> seleniumI.checkForSessionsAfterSurfing(i, 3, driver));
+
+    }
+
+    // A test for sorting randomly the "active-courses" list
+    @Test
+    public void TheSortingDoesNotChangeWithClicks(){
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
+        SeleniumI seleniumI = new SeleniumI();
+        WebDriver driver = new ChromeDriver();
+        seleniumI.login(driver);
+        /*
+        seleniumI.goToTab("a.nav.courses", driver);
+
+        seleniumI.addCourse("M","M",driver);
+        seleniumI.addCourse("I","I",driver);
+        seleniumI.addCourse("Z","Z",driver);
+        */
+        qt()
+                .forAll(integers().between(1,10))
+                .check(i -> seleniumI.courseIDSort(i,driver) );
+    }
+
 }
 

@@ -12,32 +12,9 @@ import java.util.List;
 public class Tools {
 
 
-    // get the number of courses
-    public int getCoursesCount(WebDriver chromeDriver){
-        WebDriverWait wait = new WebDriverWait(chromeDriver,30);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("th.align-center.no-print")));
-        ArrayList<String> data = new ArrayList<>();
-        List<WebElement> rows =  chromeDriver.findElements(By.xpath("//table[@id='tableActiveCourses']/tbody/tr"));
-        for (WebElement row : rows) {
-            WebElement dataElement = row.findElement(By.xpath("td[position()=1]"));
-            data.add(dataElement.getText().toString());
-        }
-        if (data.get(0).isEmpty()){return 0;}
-        else return data.size();
-    }
 
 
-    // get the number of sessions
-    public int getSessionsCount(WebDriver chromeDriver){
-        WebDriverWait wait = new WebDriverWait(chromeDriver, 30);
-        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("table-sessions")));
-        return chromeDriver.findElements(By.xpath("//table[@class='table-responsive table table-striped table-bordered']/tbody/tr")).size();
-    }
+
 
     // improvement to be done : entering which session i want to copy from which course, and if already the name exist.
     // if we can get the warnings when we do similar acts.
