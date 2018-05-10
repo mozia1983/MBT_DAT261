@@ -367,4 +367,75 @@ public class SeleniumI {
         return false;
     }
 
+    /**
+     * check if the the number of sessions still the same after surfing between tabs a random number of times
+     *
+     * @param i                 - The random number of alternative sort clicks
+     * @param chromeDriver      - The webPage controller
+     * @return boolean          - True if the sort of courses list remain consistent however the number of clicks, false if not.
+     */
+    public boolean courseIDSort(int i, WebDriver chromeDriver) {
+
+        goToTab("a.nav.evaluations",chromeDriver);
+        goToTab("a.nav.courses",chromeDriver);
+        JavascriptExecutor jse = (JavascriptExecutor) chromeDriver;
+        jse.executeScript("scroll(0, 350)");
+
+        WebElement dataElement;
+        List<WebElement> rows;
+        List<String> idSortedAscending = new ArrayList<>();
+        List<String> idSortedDescending = new ArrayList<>();
+
+        // We get the list of courses sorted in ascending order ( by default)
+        rows = chromeDriver.findElements(By.xpath("//table[@id='tableActiveCourses']/tbody/tr"));
+        for ( int j = 0; j < rows.size(); j++) {
+            dataElement = rows.get(j).findElement(By.xpath("td[position()=1]"));
+            idSortedAscending.add(dataElement.getText());
+        }
+        System.out.print("Sorted Ascending : \n");
+        idSortedAscending.forEach(System.out::println);
+
+        // We get the list of courses sorted in descending order ( we click one time)
+        sortColumn("button_sortcourseid", chromeDriver);
+        rows = chromeDriver.findElements(By.xpath("//table[@id='tableActiveCourses']/tbody/tr"));
+        for ( int j = 0; j < rows.size(); j++) {
+            dataElement = rows.get(j).findElement(By.xpath("td[position()=1]"));
+            idSortedDescending.add(dataElement.getText());
+        }
+        System.out.print("Sorted Descending : \n");
+        idSortedDescending.forEach(System.out::println);
+
+        // To return to the initial state we go to another tab and then we return
+        goToTab("a.nav.evaluations",chromeDriver);
+        goToTab("a.nav.courses",chromeDriver);
+        jse.executeScript("scroll(0, 350)");
+
+        // We click 'i' times
+        for(int j = 0; j < i ; j++) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            sortColumn("button_sortcourseid", chromeDriver);
+        }
+        // we extract the sorted list after i clicks
+        rows = chromeDriver.findElements(By.xpath("//table[@id='tableActiveCourses']/tbody/tr"));
+        List<String> sortedList = new ArrayList<>();
+            // We extract the ID first
+            for (int j = 0; j < rows.size(); j++) {
+                dataElement = rows.get(j).findElement(By.xpath("td[position()=1]"));
+                sortedList.add(dataElement.getText());
+            }
+
+        System.out.print("Number of clicks : "+i+"\n");
+
+        System.out.print("Sorted \n");
+        sortedList.forEach(System.out::println);
+
+        // if i is  even the list must return to the default case ( Ascending)
+        // if i is  odd the list must return to the opposite of default case ( Descending)
+        if(i%2==0)  return sortedList.equals(idSortedAscending);
+        else        return sortedList.equals(idSortedDescending);
+    }
 }

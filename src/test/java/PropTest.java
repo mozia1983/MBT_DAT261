@@ -142,5 +142,24 @@ public class PropTest implements WithQuickTheories {
 
     }
 
+    // A test for sorting randomly the "active-courses" list
+    @Test
+    public void TheSortingDoesNotChangeWithClicks(){
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
+        SeleniumI seleniumI = new SeleniumI();
+        WebDriver driver = new ChromeDriver();
+        seleniumI.login(driver);
+        /*
+        seleniumI.goToTab("a.nav.courses", driver);
+
+        seleniumI.addCourse("M","M",driver);
+        seleniumI.addCourse("I","I",driver);
+        seleniumI.addCourse("Z","Z",driver);
+        */
+        qt()
+                .forAll(integers().between(1,10))
+                .check(i -> seleniumI.courseIDSort(i,driver) );
+    }
+
 }
 
