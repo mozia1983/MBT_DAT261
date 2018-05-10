@@ -34,12 +34,6 @@ public class SeleniumI {
         chromeDriver.findElement(By.id("passwordNext")).click();
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-    // Go to any Tab in the webapp
-    public void goToTab(String tabCss, WebDriver chromeDriver){
-=======
     /**
      * Got a specific tab
      *
@@ -47,7 +41,6 @@ public class SeleniumI {
      * @param tabCss       - a string representaing the CSS of tab in the page
      */
     public void goToTab(String tabCss, WebDriver chromeDriver) {
->>>>>>> cbf93c58c9386bc05df09059ed6bf68f08b280ce
         WebDriverWait wait = new WebDriverWait(chromeDriver, 30);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector(tabCss)));
         chromeDriver.findElement(By.cssSelector(tabCss)).click();
@@ -270,6 +263,5 @@ public class SeleniumI {
             return false;
         }
     }
->>>>>>> f3552c4919ee61bd92f9e5144829554cc9e187ec
 
 }

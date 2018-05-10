@@ -9,11 +9,5 @@
         <module name="teammateQuickCheck" />
       </profile>
     </annotationProcessing>
-<<<<<<< HEAD
-=======
-    <bytecodeTargetLevel>
-      <module name="teammateQuickCheck" target="8" />
-    </bytecodeTargetLevel>
->>>>>>> f3552c4919ee61bd92f9e5144829554cc9e187ec
   </component>
 </project>
