@@ -3,12 +3,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.quicktheories.WithQuickTheories;
 import org.testng.annotations.Test;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import org.quicktheories.core.Gen;
 
 import java.util.ArrayList;
+import java.util.Date;
 
-import static org.quicktheories.generators.SourceDSL.*;
-import static org.testng.AssertJUnit.assertEquals;
+import static java.util.Locale.ENGLISH;
+
 
 public class PropTest implements WithQuickTheories {
 
@@ -21,12 +24,29 @@ public class PropTest implements WithQuickTheories {
         System.out.print("The generated id: " + id + " Matched: " + b + "\n");
         return b;
     }
+
     //to check if the name format respect the specification
     public boolean regMatchName(String name) {
         boolean b = name.matches("^([A-Z]|[a-z]|[0-9])([^\\|%]*)");
         System.out.print("The generated name: " + name + " Matched: " + b + "\n");
         return b;
+    }
 
+    //to check if the session name format respect the specification
+    public boolean regMatchSessionName(String sessionName) {
+        boolean b = sessionName.matches("^([A-Z]|[a-z]|[0-9])([^\\|%<>&'/\"]*)");
+        if (b) System.out.print("The generated session name: " + sessionName + " Matched: " + b + "\n");
+        return b;
+    }
+
+    //to check if the closing date is not in the past
+    public boolean verifyDate(Date closingDate){
+        Format formatter = new SimpleDateFormat("EEE, dd MMM, yyyy",ENGLISH);
+        Date today = new Date();
+        String actual = formatter.format(today);
+        String closing = formatter.format(closingDate);
+        if (closingDate.after(today)) System.out.println("Closing : " + closing +" Today : "+ actual+"\n");
+        return closingDate.after(today);
     }
 
     // A test for adding a course
@@ -50,5 +70,34 @@ public class PropTest implements WithQuickTheories {
 
         seleniumI.deleteAllCourses(driver);
     }
+
+    // A test for adding a session
+    @Test
+    public void respectedSessionFormatIsAdded() {
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
+        SeleniumI seleniumI = new SeleniumI();
+        WebDriver driver = new ChromeDriver();
+        seleniumI.login(driver);
+
+        // created just to be able to add sessions
+        seleniumI.goToTab("a.nav.courses", driver);
+        seleniumI.addCourse("trial", "trial", driver);
+
+        seleniumI.goToTab("a.nav.evaluations", driver);
+        Format formatter = new SimpleDateFormat("EEE, dd MMM, yyyy",ENGLISH);
+
+
+        // actual time in milliseconds
+        long millis = System.currentTimeMillis();
+
+        qt()
+                .forAll(strings().basicLatinAlphabet().ofLength(4),
+                        dates().withMillisecondsBetween(millis,1904578261000L))
+                .assuming((sessionName, date) -> regMatchSessionName(sessionName)
+                                                    && verifyDate(date))
+                .check((sessionName, date) -> seleniumI.addSessionAndCheckIfAdded(sessionName, formatter.format(date), driver));
+
+    }
+
 }
 

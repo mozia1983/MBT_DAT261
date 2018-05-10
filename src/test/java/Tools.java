@@ -73,16 +73,6 @@ public class Tools {
         //"(//input[@type='radio'])[1]"
     }
 
-    public  void addNewSession(String sessionName,String date, WebDriver chromeDriver) {
-        WebDriverWait wait = new WebDriverWait(chromeDriver,30);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fsname")));
-        chromeDriver.findElement(By.id("fsname")).sendKeys(sessionName);
-        chromeDriver.findElement(By.id("enddate")).sendKeys(date);
-        chromeDriver.findElement(By.id("fsname")).click();
-        JavascriptExecutor jse = (JavascriptExecutor) chromeDriver;
-        jse.executeScript("scroll(0, 250)"); // if the element is on bottom.
-        chromeDriver.findElement(By.id("button_submit")).click();
-    }
 
     public void doneEditing(WebDriver chromeDriver){
         WebDriverWait wait = new WebDriverWait(chromeDriver,30);

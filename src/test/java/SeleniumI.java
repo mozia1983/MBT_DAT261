@@ -78,6 +78,12 @@ public class SeleniumI {
         chromeDriver.findElement(By.name("courseid")).sendKeys(courseID);
         chromeDriver.findElement(By.name("coursename")).sendKeys(courseName);
         chromeDriver.findElement(By.id("btnAddCourse")).click();
+        // A sleep to allow page to refresh after adding course
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -88,19 +94,13 @@ public class SeleniumI {
      *                     It cannot be longer than 40 characters, cannot be empty and cannot contain spaces
      * @param name         - A course name must start with an alphanumeric character,and cannot contain any vertical bar (|) or percent sign (%)
      * @param chromeDriver - The webPage controller
+     * @return boolean     - True if the course appear in the active course list, false in the other case.
      */
     public boolean addCourseAndCheckIfAdded(String id, String name, WebDriver chromeDriver) {
         //System.out.print("First layer in adding phase \n");
         //We add the course
         addCourse(id, name, chromeDriver);
-        // A sleep to allow page to refresh after adding course
         WebDriverWait wait = new WebDriverWait(chromeDriver, 30);
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         wait.until(ExpectedConditions.presenceOfElementLocated(By.cssSelector("th.align-center.no-print")));
 
         // We sort according to "Creation date", our added course will be on top of the list,
@@ -129,7 +129,7 @@ public class SeleniumI {
      *
      * @param chromeDriver - The webPage controller
      */
-    public void deleteCourse(WebDriver chromeDriver) {
+    public void deleteOneCourse(WebDriver chromeDriver) {
 
         WebDriverWait wait = new WebDriverWait(chromeDriver, 30);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("courseid")));
@@ -193,4 +193,75 @@ public class SeleniumI {
             chromeDriver.findElement(By.xpath("/html/body/div[4]/div/div/div[3]/button[2]")).click();
         }
     }
+
+    /**
+     * Add a new session given the name and due date
+     *
+     * @param sessionName     - A sessionName A/An feedback session name must start with
+     *                        an alphanumeric character, and cannot contain any vertical bar (|) or percent sign (%).
+     *                        it cannot contain the following special html characters in brackets: (< > " / ' &).
+     * @param date   - A  due date must be later then opening date.
+     * @param chromeDriver - The webPage controller
+     */
+    public  void addOneSession(String sessionName,String date, WebDriver chromeDriver) {
+        WebDriverWait wait = new WebDriverWait(chromeDriver,30);
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("fsname")));
+        chromeDriver.findElement(By.id("fsname")).sendKeys(sessionName);
+        chromeDriver.findElement(By.id("enddate")).sendKeys(date);
+        chromeDriver.findElement(By.id("fsname")).click();
+        JavascriptExecutor jse = (JavascriptExecutor) chromeDriver;
+        jse.executeScript("scroll(0, 250)"); // if the element is on bottom.
+        chromeDriver.findElement(By.id("button_submit")).click();
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("button_done_editing")));
+        jse.executeScript("scroll(0, 4800)");
+        chromeDriver.findElement(By.id("button_done_editing")).click();
+    }
+
+    /**
+     * Add a new session given the name and due date and verify that it was added
+     *
+     * @param sessionName   - A sessionName A/An feedback session name must start with
+     *                        an alphanumeric character, and cannot contain any vertical bar (|) or percent sign (%).
+     * @param closingDate   - A  due date must be later then opening date.
+     * @param chromeDriver  - The webPage controller
+     * @return boolean      - True if the course appear in the active course list, false in the other case.
+     */
+    public boolean addSessionAndCheckIfAdded(String sessionName, String closingDate, WebDriver chromeDriver) {
+        //System.out.print("First layers in adding phase \n");
+        //We add the course
+        System.out.print("The Date as passed "+ closingDate);
+        addOneSession(sessionName, closingDate, chromeDriver);
+        // A sleep to allow page to refresh after adding course
+        WebDriverWait wait = new WebDriverWait(chromeDriver, 30);
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        wait.until(ExpectedConditions.presenceOfElementLocated(By.id("form_feedbacksession")));
+
+        // We sort according to "Creation date", our added course will be on top of the list,
+        // we extract name and ID and we compare to the added course
+        String str = new String();
+        sortColumn("button_sortname", chromeDriver);
+        sortColumn("button_sortname", chromeDriver);
+        List<WebElement> rows = chromeDriver.findElements(By.xpath("//table[@id='table-sessions']/tbody/tr"));
+        // We extract the ID first
+        WebElement dataElement = rows.get(0).findElement(By.xpath("td[position()=2]"));
+        str = (dataElement.getText().toString());
+        //System.out.print("Theoretically added | name : " + sessionName + " " + "ID : " + str + " " + (str.equals(id)) + "\n");
+        if (str.equals(sessionName)) {
+            //dataElement = rows.get(0).findElement(By.xpath("td[position()=2]"));
+            //str = (dataElement.getText().toString());
+            //System.out.print("True: ID in active list | name : " + name + " " + "ID : " + id + " " +(str.equals(name))+" "+ str + "\n");
+            //return str.equals(name);
+            System.out.print("True: Session in session list \n");
+            return true;
+        } else {
+            System.out.print("False: Session not in session list | name : " + sessionName + " " + "found : " + str + " " + false + "\n");
+            return false;
+        }
+    }
+
 }
