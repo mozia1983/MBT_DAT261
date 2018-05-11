@@ -42,12 +42,12 @@ public class PropTest implements WithQuickTheories {
     //to check if the session name format respect the specification
     public boolean regMatchSessionName(String sessionName) {
         boolean b = sessionName.matches("^([A-Z]|[a-z]|[0-9])([^\\|%<>&'/\"]*)");
-        if (b) System.out.print("The generated session name: " + sessionName + " Matched: " + b + "\n");
+        //if (b) System.out.print("The generated session name: " + sessionName + " Matched: " + b + "\n");
         return b;
     }
 
-    public  Gen<String> genName() {
-        return  strings().basicLatinAlphabet().ofLengthBetween(1, 400).assuming(s -> regMatchSessionName(s));
+    public  Gen<String> genName(int size) {
+        return  strings().basicLatinAlphabet().ofLengthBetween(1, size).assuming(s -> regMatchSessionName(s));
     }
 
     //to check if the closing date is not in the past
@@ -84,9 +84,13 @@ public class PropTest implements WithQuickTheories {
     }
 
 
+    public Gen<String> genEmail() {
+        return  genName(60).zip(genName(58),(a, b) -> a + "@" +b);
+    }
+
     public Gen<String> genStudent() {
-        return genName().zip(genName(),genName(),genName(), (a,b,c,d) -> {
-            return a + "    " + b + "   " + c + "   " + d ;
+        return genName(400).zip(genName(400),genName(400),genEmail(), (a,b,c,d) -> {
+            return a + "|" + b + "|" + c + "|" + d + "|";
         }) ;
     }
 
@@ -104,7 +108,7 @@ public class PropTest implements WithQuickTheories {
     @Test
     public void testEnrollStudent() {
 
-        final String header = "Section\tTeam\tName\tEmail\tComments";
+        final String header = "Section|Team|Name|Email|Comments";
         final String enrollButtonPath = "//*[@id=\"tableActiveCourses\"]/tbody/tr/td[8]/a[1]";
         final String studentsInputFieldPath = "//*[@id=\"enrollstudents\"]";
 
@@ -136,9 +140,9 @@ public class PropTest implements WithQuickTheories {
                     jse.executeScript("scroll(0, 250)");
 
                     System.out.println(students.toString());
-            driver.findElement(By.xpath(studentsInputFieldPath)).sendKeys(header);
-            return  true;
-            /*
+            driver.findElement(By.xpath(studentsInputFieldPath)).sendKeys(students);
+            //return  true;
+
             driver.findElement(By.xpath("//*[@id=\"button_enroll\"]"));
 
             wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//*[@id=\"mainContent\"]/div[2]/table")));
@@ -159,7 +163,7 @@ public class PropTest implements WithQuickTheories {
                     return row.findElement(By.xpath("td[position()=4]")).getText().equals(email);
                 }).reduce((a, b) -> a || b);
             }).reduce((a, b) -> java.util.Optional.of(a.get().booleanValue() || b.get().booleanValue())).get().get().booleanValue();
-            */
+
         });
 
     }
@@ -194,7 +198,7 @@ public class PropTest implements WithQuickTheories {
     }
 
     // A test for surfing through tabs
-    @Test
+    //@Test
     public void surfingThroughTabsDoesNotChangeCoursesView() {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
         WebDriver driver = new ChromeDriver();
@@ -214,7 +218,7 @@ public class PropTest implements WithQuickTheories {
     }
 
     // A test for surfing through sessions
-    @Test
+    //@Test
     public void surfingThroughTabsDoesNotChangeSessionsView() {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
         SeleniumI seleniumI = new SeleniumI();
@@ -237,7 +241,7 @@ public class PropTest implements WithQuickTheories {
     }
 
     // A test for sorting randomly the "active-courses" list
-    @Test
+    //@Test
     public void TheSortingDoesNotChangeWithClicks(){
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
         SeleniumI seleniumI = new SeleniumI();
