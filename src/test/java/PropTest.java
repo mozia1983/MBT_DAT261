@@ -22,6 +22,8 @@ import static java.util.Locale.ENGLISH;
 
 public class PropTest implements WithQuickTheories {
 
+    ///////////////////////////////////// Part1 ////////////////////////////////////////////
+
     private static ArrayList<String> addedNames = new ArrayList<>();
     private static ArrayList<String> addedIds = new ArrayList<>();
 
@@ -62,18 +64,21 @@ public class PropTest implements WithQuickTheories {
 
 
     // A test for adding a course
-    //@Test
+    @Test
     public void respectedCourseFormatIsAdded() {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
         WebDriver driver = new ChromeDriver();
         SeleniumI seleniumI = new SeleniumI();
-        seleniumI.login(driver);
+        //seleniumI.login(driver);
+        // If you want to test the mutation part you switch to this login
+        seleniumI.local_Login("momo@momo.momo",driver);
         seleniumI.goToTab("a.nav.courses", driver);
         // created just to be able to call a method from Course clas
         Course course = new Course("hello", "hi");
         // the test is aborting almost of the times because the generators are almost of the time rejected because they don't match the regex
         // we must investigate how to generate Strings with less characters then LatinAlphabet.
         qt()
+                .withGenerateAttempts(100)
                 .forAll(strings().basicLatinAlphabet().ofLength(4), strings().basicLatinAlphabet().ofLength(4))
                 .assuming((id, name) -> regMatchId(id)
                         && regMatchName(name)
@@ -82,6 +87,7 @@ public class PropTest implements WithQuickTheories {
 
         seleniumI.deleteAllCourses(driver);
     }
+
 
 
     public Gen<String> genStudent() {
@@ -94,12 +100,6 @@ public class PropTest implements WithQuickTheories {
         return lists().of(genStudent()).ofSizeBetween(1, 100);
     }
 
-    public  void logIn() {
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
-        SeleniumI seleniumI = new SeleniumI();
-        WebDriver driver = new ChromeDriver();
-        seleniumI.login(driver);
-    }
 
     @Test
     public void testEnrollStudent() {
@@ -109,7 +109,7 @@ public class PropTest implements WithQuickTheories {
         final String studentsInputFieldPath = "//*[@id=\"enrollstudents\"]";
 
 
-        System.setProperty("webdriver.chrome.driver", "/home/moh/tmp/chromedriver");
+        System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
         SeleniumI seleniumI = new SeleniumI();
         WebDriver driver = new ChromeDriver();
         seleniumI.login(driver);
@@ -167,7 +167,7 @@ public class PropTest implements WithQuickTheories {
 
 
     // A test for adding a session
-    //@Test
+    @Test
     public void respectedSessionFormatIsAdded() {
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\mozia\\Desktop\\Trial\\chromedriver.exe");
         SeleniumI seleniumI = new SeleniumI();
@@ -255,5 +255,34 @@ public class PropTest implements WithQuickTheories {
                 .check(i -> seleniumI.courseIDSort(i,driver) );
     }
 
+
+    ///////////////////////////////////// Part2 ////////////////////////////////////////////
+    /*
+ First to launch a test u must follow the steps i have registered in video to create an instructor,
+ then stop the run of their project on local host, then make a mutation
+ ( change ) in the code then you run teammate app again, now you can use any function of question 1, you just replace
+  login with login_local , for example I have change the regex of the id in their project by taking out the capital letters
+  from the course id, and as my quick theories will add capital letters ( because we follow specifications) this will trigger this error in their code
+  and fail the test.
+
+
+The file "FielValidator.Java" that contains all regex for names, and date validation.
+is Found in  \teammates-master\src\main\java\teammates\common\util
+
+The regexs are in a section that begins at line 216
+--------------------------------------------------------
+The name validity for course name is at line  476
+
+The name validity for course id is at line  379
+--------------------------------------------------------
+
+The time validity for sessions is at line 628
+
+The name validity for session is at line  457
+
+checks for unsanitized HTML characters is at line 466 ( this check is an additional check for session name as it cannot contain html special characters)
+
+--------------------------------------------------------
+*/
 }
 

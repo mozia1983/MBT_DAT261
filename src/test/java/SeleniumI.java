@@ -75,8 +75,15 @@ public class SeleniumI {
         //System.out.print("Second layer in adding phase \n");
         WebDriverWait wait = new WebDriverWait(chromeDriver, 30);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("courseid")));
-        chromeDriver.findElement(By.name("courseid")).sendKeys(courseID);
-        chromeDriver.findElement(By.name("coursename")).sendKeys(courseName);
+        // improvement to clear the box each time because when it fails to add a course the course attributes remain in the
+        // input boxes on the web application
+        WebElement id = chromeDriver.findElement(By.name("courseid"));
+        id.clear();
+        id.sendKeys(courseID);
+        WebElement name = chromeDriver.findElement(By.name("coursename"));
+        name.clear();
+        name.sendKeys(courseName);
+
         chromeDriver.findElement(By.id("btnAddCourse")).click();
         // A sleep to allow page to refresh after adding course
         try {
@@ -200,14 +207,21 @@ public class SeleniumI {
      * @param sessionName     - A sessionName A/An feedback session name must start with
      *                        an alphanumeric character, and cannot contain any vertical bar (|) or percent sign (%).
      *                        it cannot contain the following special html characters in brackets: (< > " / ' &).
-     * @param date   - A  due date must be later then opening date.
+     * @param sessionDate   - A  due date must be later then opening date.
      * @param chromeDriver - The webPage controller
      */
-    public  void addOneSession(String sessionName,String date, WebDriver chromeDriver) {
+    public  void addOneSession(String sessionName,String sessionDate, WebDriver chromeDriver) {
         WebDriverWait wait = new WebDriverWait(chromeDriver,30);
         wait.until(ExpectedConditions.presenceOfElementLocated(By.id("fsname")));
-        chromeDriver.findElement(By.id("fsname")).sendKeys(sessionName);
-        chromeDriver.findElement(By.id("enddate")).sendKeys(date);
+
+        WebElement name = chromeDriver.findElement(By.id("fsname"));
+        name.clear();
+        name.sendKeys(sessionName);
+
+        WebElement date = chromeDriver.findElement(By.id("enddate"));
+        date.clear();
+        date.sendKeys(sessionDate);
+
         chromeDriver.findElement(By.id("fsname")).click();
         JavascriptExecutor jse = (JavascriptExecutor) chromeDriver;
         jse.executeScript("scroll(0, 250)"); // if the element is on bottom.
@@ -222,6 +236,7 @@ public class SeleniumI {
      *
      * @param sessionName   - A sessionName A/An feedback session name must start with
      *                        an alphanumeric character, and cannot contain any vertical bar (|) or percent sign (%).
+     *                       it cannot contain the following special html characters in brackets: (< > " / ' &).
      * @param closingDate   - A  due date must be later then opening date.
      * @param chromeDriver  - The webPage controller
      * @return boolean      - True if the course appear in the active course list, false in the other case.
@@ -438,4 +453,43 @@ public class SeleniumI {
         if(i%2==0)  return sortedList.equals(idSortedAscending);
         else        return sortedList.equals(idSortedDescending);
     }
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+    ///////////////////////////////////// Part2 ////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    /**
+     * Login to teammate on local host with the username that you have added using the admin account
+     * Attention : you must login manually first time to confirm it is you.
+     *
+     * @param email        - The email you have registered
+     * @param chromeDriver - The webPage controller
+     */
+    public void local_Login(String email, WebDriver chromeDriver) {
+        //chromeDriver.get("http://localhost:8080/page/instructorCourseJoin?key=0DD735D868C242CE96C0F07420B57B8F2798B1F80BB868A172D7849C8781D80B548E8B47F7637FD4411C5B67BFCA8AB7&instructorinstitution=momo");
+
+        // I think this works if you launch the server again without closing the project ( attention u must logout, otherwise
+        // it will take you to the account directly
+        chromeDriver.get("http://localhost:8080/");
+        chromeDriver.findElement(By.id("btnInstructorLogin")).click();
+
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        WebElement emailInput = chromeDriver.findElement(By.id("email"));
+        emailInput.clear();
+        emailInput.sendKeys(email);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        chromeDriver.findElement((By.id("btn-login"))).click();
+        //button_confirm
+    }
 }
+

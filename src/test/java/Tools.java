@@ -13,9 +13,6 @@ public class Tools {
 
 
 
-
-
-
     // improvement to be done : entering which session i want to copy from which course, and if already the name exist.
     // if we can get the warnings when we do similar acts.
     public  void addSessionByCopy(String sessionName, WebDriver chromeDriver) throws InterruptedException {
